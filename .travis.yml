@@ -1,0 +1,15 @@
+sudo: required
+
+services:
+  - docker
+
+before_install:
+  - docker --version
+  - docker build -t sandinh/php .
+  - docker run --rm -d sandinh/php
+  - docker cp `docker ps -q`:/usr/local/etc/ .
+  - curl -L -o coursier https://git.io/vgvpD && chmod +x coursier
+  - ./coursier bootstrap com.lihaoyi:ammonite_2.12.3:1.0.1-1-d2e04ce -o amm
+
+script:
+  - ./amm Test.sc
