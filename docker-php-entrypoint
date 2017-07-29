@@ -1,0 +1,22 @@
+#!/bin/sh
+set -e
+
+IFS='¶'
+file=/usr/local/etc/php/conf.d/docker-php-ext-apcu.ini
+for s in $APC_CONFIGS; do
+  [[ -z "${s// }" ]] || grep -qF "$s" "$file" || echo "$s" >> "$file"
+done
+
+file=/usr/local/etc/php-fpm.d/www.conf
+for s in $WWW_CONFIGS; do
+  [[ -z "${s// }" ]] || sed -i "$file" -e "s|^[; ]*$s|"
+done
+unset IFS
+
+# https://github.com/docker-library/php/blob/master/7.1/fpm/alpine/docker-php-entrypoint
+# first arg is `-f` or `--some-option`
+if [ "${1#-}" != "$1" ]; then
+	set -- php-fpm "$@"
+fi
+
+exec "$@"
