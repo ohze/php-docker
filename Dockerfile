@@ -3,7 +3,9 @@ FROM php:7-fpm-alpine
 # install php extensions as required in https://xenforo.com/help/installation/
 # note: We use mysqlnd client library with mysqli extensions.
 # see http://php.net/manual/en/mysqli.installation.php
-RUN apk add --update freetype libpng libjpeg-turbo && \
+RUN apk add --update freetype libpng libjpeg-turbo \
+    # require for wget https://...
+    openssl && \
   apk add --virtual .build-dep gcc make autoconf libc-dev freetype-dev libpng-dev libjpeg-turbo-dev pcre-dev && \
   pecl install apcu && \
   docker-php-ext-enable apcu opcache && \
@@ -15,7 +17,12 @@ RUN apk add --update freetype libpng libjpeg-turbo && \
   docker-php-ext-configure mysqli --with-mysqli && \
   docker-php-ext-install -j"$(getconf _NPROCESSORS_ONLN)" gd mysqli && \
   apk del .build-dep && \
-  rm -rf /var/cache/apk/*
+  rm -rf /var/cache/apk/* && \
+  # https://docs.aws.amazon.com/aws-sdk-php/v3/guide/getting-started/installation.html#installing-via-zip
+  wget -O /var/www/aws.zip https://github.com/aws/aws-sdk-php/releases/download/3.32.3/aws.zip && \
+  mkdir /var/www/aws && \
+  unzip -q -d /var/www/aws /var/www/aws.zip && \
+  rm /var/www/aws.zip
 
 COPY docker-php-entrypoint /usr/local/bin/
 
