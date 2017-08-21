@@ -19,7 +19,7 @@ RUN apk add --update freetype libpng libjpeg-turbo \
   apk del .build-dep && \
   rm -rf /var/cache/apk/* && \
   # https://docs.aws.amazon.com/aws-sdk-php/v3/guide/getting-started/installation.html#installing-via-zip
-  wget -O /var/www/aws.zip https://github.com/aws/aws-sdk-php/releases/download/3.32.3/aws.zip && \
+  wget -O /var/www/aws.zip https://github.com/aws/aws-sdk-php/releases/download/3.33.3/aws.zip && \
   mkdir /var/www/aws && \
   unzip -q -d /var/www/aws /var/www/aws.zip && \
   rm /var/www/aws.zip
