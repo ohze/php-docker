@@ -1,5 +1,7 @@
 FROM php:7-fpm-alpine
 
+ARG AWS_VERSION="3.36.31"
+
 # install php extensions as required in https://xenforo.com/help/installation/
 # note: We use mysqlnd client library with mysqli extensions.
 # see http://php.net/manual/en/mysqli.installation.php
@@ -19,7 +21,7 @@ RUN apk add --update freetype libpng libjpeg-turbo \
   apk del .build-dep && \
   rm -rf /var/cache/apk/* && \
   # https://docs.aws.amazon.com/aws-sdk-php/v3/guide/getting-started/installation.html#installing-via-zip
-  wget -O /var/www/aws.zip https://github.com/aws/aws-sdk-php/releases/download/3.33.3/aws.zip && \
+  wget -O /var/www/aws.zip https://github.com/aws/aws-sdk-php/releases/download/${AWS_VERSION}/aws.zip && \
   mkdir /var/www/aws && \
   unzip -q -d /var/www/aws /var/www/aws.zip && \
   rm /var/www/aws.zip
